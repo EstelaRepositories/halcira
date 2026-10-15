@@ -22,6 +22,8 @@ Everything below lives in Halcira's data folder on your PC (under your Windows u
 - Lisa's data: her notes about what you asked her to remember, chat history, follow-ups, reminders, the codes, packages, bills and events she found, label rules, unsubscribe history, scheduled emails, and her activity log.
 - Your settings and your OpenPGP keys.
 
+Halcira for Android keeps its link key in Android's protected storage, plus a copy of your recent message list so it opens instantly. It's excluded from Google backups and device transfers, and unlinking the phone erases it.
+
 Sender pictures are cached as plain image files so they don't need to be downloaded again. If you choose "Unlock automatically on this PC", your passcode is protected with Windows' own per-user encryption (DPAPI) so Halcira can open without asking. Turn that off in Settings to type it every time.
 
 Deleting an account in Halcira removes its data from the vault. Uninstalling Halcira and deleting its data folder removes everything.
@@ -37,6 +39,7 @@ Halcira connects directly from your computer to these services. Each one receive
 - Senders' unsubscribe addresses, only when you or Lisa unsubscribe: a request to the link or address the sender published in the email.
 - Senders' image servers, when an email's images load: automatically in Default privacy mode, or only when you choose Load images in Strict mode. Like any web image, this can let a sender see your IP address and that the email was opened. Known tracking pixels are blocked either way.
 - GitHub, to check for and download Halcira updates. GitHub receives your IP address and the app version.
+- Your own PC, if you use Halcira for Android: the phone talks only to Halcira on your PC, over your Wi-Fi or Tailscale, and every request is end-to-end encrypted with a key the phone got by scanning a code on your PC's screen. Mail, Lisa and settings reach the phone this way; nothing goes through a Halcira server.
 
 Halcira does not include analytics, crash reporting, advertising or tracking code of any kind.
 

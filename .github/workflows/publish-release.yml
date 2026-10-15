@@ -29,6 +29,14 @@ jobs:
           echo "$(cat SHA256)  $exe" | sha256sum -c -
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "exe=$exe" >> "$GITHUB_OUTPUT"
+          # Halcira for Android, when this release includes it.
+          apk=""
+          for f in Halcira-Android-*.apk; do
+            [ -e "$f" ] || continue
+            echo "$(cat APK_SHA256)  $f" | sha256sum -c -
+            apk="$f"
+          done
+          echo "apk=$apk" >> "$GITHUB_OUTPUT"
 
       - name: Publish the release
         env:
@@ -42,7 +50,8 @@ jobs:
             --target main \
             --title "Halcira $v" \
             --notes-file NOTES.md \
-            "${{ steps.build.outputs.exe }}" "${{ steps.build.outputs.exe }}.blockmap" latest.yml
+            "${{ steps.build.outputs.exe }}" "${{ steps.build.outputs.exe }}.blockmap" latest.yml \
+            ${{ steps.build.outputs.apk }}
 
       - name: Remove the upload branch
         if: success()
