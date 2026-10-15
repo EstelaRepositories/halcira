@@ -1,5 +1,8 @@
-# Publishes a Halcira release from installer pieces pushed to an upload/<version> branch.
-# The pieces exist because a single installer is larger than GitHub's 100 MB file limit.
+# Publishes a Halcira release from files pushed to an upload/<version> branch.
+#  - Desktop releases: installer pieces (a single installer is larger than GitHub's 100 MB file
+#    limit), plus Halcira for Android when it's included.
+#  - Android-only releases: just the APK. These are never marked "latest", so the desktop app's
+#    updater (which reads the latest release) isn't affected.
 # After the release is published, the upload branch is deleted.
 name: Publish release
 
@@ -18,27 +21,33 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Reassemble and verify the installer
+      - name: Reassemble and verify the files
         id: build
         run: |
           set -euo pipefail
           cd upload
-          version=$(grep '^version:' latest.yml | awk '{print $2}')
-          exe="Halcira-Setup-${version}.exe"
-          cat Halcira-Setup.part* > "$exe"
-          echo "$(cat SHA256)  $exe" | sha256sum -c -
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "exe=$exe" >> "$GITHUB_OUTPUT"
-          # Halcira for Android, when this release includes it.
+          if [ -e Halcira-Setup.part0 ]; then
+            version=$(grep '^version:' latest.yml | awk '{print $2}')
+            exe="Halcira-Setup-${version}.exe"
+            cat Halcira-Setup.part* > "$exe"
+            echo "$(cat SHA256)  $exe" | sha256sum -c -
+            echo "kind=desktop" >> "$GITHUB_OUTPUT"
+            echo "version=$version" >> "$GITHUB_OUTPUT"
+            echo "exe=$exe" >> "$GITHUB_OUTPUT"
+          else
+            echo "kind=android" >> "$GITHUB_OUTPUT"
+          fi
           apk=""
           for f in Halcira-Android-*.apk; do
             [ -e "$f" ] || continue
             echo "$(cat APK_SHA256)  $f" | sha256sum -c -
             apk="$f"
+            echo "apkversion=$(echo "$f" | sed -E 's/Halcira-Android-(.*)\.apk/\1/')" >> "$GITHUB_OUTPUT"
           done
           echo "apk=$apk" >> "$GITHUB_OUTPUT"
 
-      - name: Publish the release
+      - name: Publish the desktop release
+        if: steps.build.outputs.kind == 'desktop'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -52,6 +61,22 @@ jobs:
             --notes-file NOTES.md \
             "${{ steps.build.outputs.exe }}" "${{ steps.build.outputs.exe }}.blockmap" latest.yml \
             ${{ steps.build.outputs.apk }}
+
+      - name: Publish the Android release
+        if: steps.build.outputs.kind == 'android' && steps.build.outputs.apk != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd upload
+          v="${{ steps.build.outputs.apkversion }}"
+          gh release create "android-v$v" \
+            --repo "${{ github.repository }}" \
+            --target main \
+            --title "Halcira for Android $v" \
+            --notes-file NOTES.md \
+            --latest=false \
+            "${{ steps.build.outputs.apk }}"
 
       - name: Remove the upload branch
         if: success()
