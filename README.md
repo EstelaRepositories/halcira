@@ -1,6 +1,6 @@
 # Halcira
 
-Private, organized email for Windows 11, with Lisa, a built-in email assistant.
+A privacy-first email app that respects your time. For Windows 11, with Lisa, a built-in email assistant.
 
 **Download:** grab `Halcira-Setup-x.y.z.exe` from the latest release under [Releases](../../releases/latest) and run it.
 Windows SmartScreen may warn that the installer isn't signed. Choose **More info → Run anyway**.

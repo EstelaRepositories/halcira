@@ -2,7 +2,7 @@
 
 _Last updated: October 15, 2026_
 
-Halcira is an email app that runs on your own computer. We built it so your mail stays yours: there is no Halcira server, no account with us, no analytics and no ads. This policy explains exactly what the app stores, where it stores it, and every outside service it talks to.
+Halcira is a privacy-first email app that respects your time. It runs on your own computer, and we built it so your mail stays yours: there is no Halcira server, no account with us, no analytics and no ads. This policy explains exactly what the app stores, where it stores it, and every outside service it talks to.
 
 ## The short version
 
@@ -32,10 +32,10 @@ Halcira connects directly from your computer to these services. Each one receive
 
 - Your email providers (Google Gmail, Microsoft Outlook, Proton Mail Bridge running on your PC, or another IMAP/SMTP server you add): to sign in, download, send, label, move and delete mail on your behalf.
 - Anthropic (Claude), only if you add an API key: the content of emails Lisa works on (sender, subject, body text) and your chats with her, so she can sort, summarize, draft replies, suggest labels, find bills and events, and answer you. Requests use your own key under your agreement with Anthropic.
-- Gravatar and DuckDuckGo, only while "Show sender pictures" is on: Gravatar receives a one-way hash of a sender's address; DuckDuckGo receives a company sender's domain name (for example, "example.com") to fetch its icon. Halcira may also look up a company's published BIMI logo through DNS and that company's website.
+- Gravatar and DuckDuckGo, only while "Show sender pictures" is on: Gravatar receives a one-way hash of a sender's address; DuckDuckGo receives a company sender's domain name (for example, "example.com") to fetch its icon. For company senders, Halcira may also look up the company's published BIMI logo through DNS and the logo or app icon on the company's own website (it requests the website itself, never anything inside the email).
 - keys.openpgp.org, only when you send an encrypted email: the recipient's address, to find their public key.
 - Senders' unsubscribe addresses, only when you or Lisa unsubscribe: a request to the link or address the sender published in the email.
-- Senders' image servers, only if you load remote images (off by default). Known tracking pixels are blocked either way.
+- Senders' image servers, when an email's images load: automatically in Default privacy mode, or only when you choose Load images in Strict mode. Like any web image, this can let a sender see your IP address and that the email was opened. Known tracking pixels are blocked either way.
 - GitHub, to check for and download Halcira updates. GitHub receives your IP address and the app version.
 
 Halcira does not include analytics, crash reporting, advertising or tracking code of any kind.
@@ -59,7 +59,7 @@ Lisa treats the content of emails as information, not instructions. Actions such
 
 ## Your choices
 
-- Turn sender pictures, remote images, notifications and each of Lisa's features on or off in Settings.
+- Choose Default or Strict privacy mode in Settings, or turn sender pictures, remote images, notifications and each of Lisa's features on or off one by one.
 - Remove your Anthropic key to stop all AI processing.
 - Remove any mail account, which also deletes its saved data.
 - Export or delete your data by using your email provider directly; Halcira keeps only copies.

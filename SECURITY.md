@@ -8,7 +8,7 @@ How Halcira protects your mail, and how to tell us about a problem.
 
 - Your accounts, keys and Lisa's data are stored in a vault encrypted with AES-256-GCM, using a key derived from your passcode with scrypt.
 - Halcira's local server listens only on your computer's loopback address and rejects requests from other websites and hostnames.
-- Email content is sanitized and shown in a sandbox without scripts. Remote images and known trackers are blocked by default.
+- Email content is sanitized and shown in a sandbox without scripts. Known trackers are always blocked, and Strict privacy mode also holds back all remote images until you ask for them.
 - Links in email open in your normal browser, never inside Halcira.
 - Lisa treats email content as information, never as instructions.
 - Updates are downloaded from the official release repository and checked against their published SHA-512 hashes before installing.
