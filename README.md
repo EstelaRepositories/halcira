@@ -9,3 +9,14 @@ Once installed, Halcira updates itself: new versions download in the background 
 or right away from **Settings → General → Updates**.
 
 This repository holds release builds only.
+
+## Your privacy
+
+Halcira runs on your PC. Your mail, passwords and Lisa's notes stay there, encrypted with your passcode.
+There's no Halcira server, no analytics and no ads.
+
+- [Privacy Policy](PRIVACY.md)
+- [Terms of Service](TERMS.md)
+- [Security and reporting a vulnerability](SECURITY.md)
+
+The same documents, plus the open-source licenses Halcira uses, are in the app under **Settings → General → About Halcira**.
