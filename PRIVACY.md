@@ -24,7 +24,7 @@ Everything below lives in Halcira's data folder on your PC (under your Windows u
 
 Halcira for Android keeps its link key in Android's protected storage, plus a copy of your recent message list so it opens instantly. It's excluded from Google backups and device transfers, and unlinking the phone erases it.
 
-If you turn on "Gmail without my PC" on the phone (it asks for your Halcira passcode), your PC gives the phone its Gmail sign-in so the phone can talk to Google directly. That sign-in is encrypted with a key kept in the phone's hardware-backed keystore. The phone then checks Gmail in the background for new-mail notifications, which show who it's from and the subject only when your phone is unlocked. Proton Mail still needs your PC, because Proton only allows other apps through Proton Mail Bridge.
+Halcira for Android also gets your Gmail sign-in from your PC when you link it, so Gmail keeps working on the phone when the PC is off (turn this off on the phone under Settings → Without your PC). If you use Halcira for Android with no PC at all, you sign in to Google on the phone, and your Google sign-in keys stay on the phone. Either way, the sign-in is encrypted with a key kept in the phone's hardware-backed keystore. The phone checks Gmail in the background for new-mail notifications, which show who it's from and the subject only when your phone is unlocked. Proton Mail still needs your PC, because Proton only allows other apps through Proton Mail Bridge.
 
 Sender pictures are cached as plain image files so they don't need to be downloaded again. If you choose "Unlock automatically on this PC", your passcode is protected with Windows' own per-user encryption (DPAPI) so Halcira can open without asking. Turn that off in Settings to type it every time.
 
@@ -41,7 +41,7 @@ Halcira connects directly from your computer to these services. Each one receive
 - Senders' unsubscribe addresses, only when you or Lisa unsubscribe: a request to the link or address the sender published in the email.
 - Senders' image servers, when an email's images load: automatically in Default privacy mode, or only when you choose Load images in Strict mode. Like any web image, this can let a sender see your IP address and that the email was opened. Known tracking pixels are blocked either way.
 - GitHub, to check for and download Halcira updates. GitHub receives your IP address and the app version.
-- Your own PC, if you use Halcira for Android: the phone talks only to Halcira on your PC, over your Wi-Fi or Tailscale, and every request is end-to-end encrypted with a key the phone got by scanning a code on your PC's screen. Mail, Lisa and settings reach the phone this way; nothing goes through a Halcira server. If you turn on "Gmail without my PC", the phone also talks to Google's Gmail servers directly, the same way the PC app does.
+- Your own PC, if you use Halcira for Android: the phone talks only to Halcira on your PC, over your Wi-Fi or Tailscale, and every request is end-to-end encrypted with a key the phone got by scanning a code on your PC's screen. Mail, Lisa and settings reach the phone this way; nothing goes through a Halcira server. The phone also talks to Google's Gmail servers directly for Gmail, the same way the PC app does.
 
 Halcira does not include analytics, crash reporting, advertising or tracking code of any kind.
 
