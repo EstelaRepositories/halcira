@@ -1,6 +1,6 @@
 # Halcira Terms of Service
 
-_Last updated: October 15, 2026_
+_Last updated: October 16, 2026_
 
 These terms are an agreement between you and Jorge Montes, the developer of Halcira ("we"), about your use of the Halcira app. By installing or using Halcira, you agree to them. If you don't agree, don't use the app.
 

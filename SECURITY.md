@@ -1,6 +1,6 @@
 # Halcira Security
 
-_Last updated: October 15, 2026_
+_Last updated: October 16, 2026_
 
 How Halcira protects your mail, and how to tell us about a problem.
 
