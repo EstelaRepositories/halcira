@@ -40,6 +40,12 @@ jobs:
               echo "$(cat APK_SHA256)  Lisa-Android-${v}.apk" | sha256sum -c -
               files="$files Lisa-Android-${v}.apk"
             fi
+            # Lisa for Chrome (a zip to load unpacked), when this release has one.
+            for z in Lisa-for-Chrome-*.zip; do
+              [ -e "$z" ] || continue
+              if [ -e CHROME_SHA256 ]; then echo "$(cat CHROME_SHA256)  $z" | sha256sum -c -; fi
+              files="$files $z"
+            done
             echo "kind=lisa" >> "$GITHUB_OUTPUT"
             echo "version=$v" >> "$GITHUB_OUTPUT"
             echo "files=$files" >> "$GITHUB_OUTPUT"
