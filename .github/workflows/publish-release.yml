@@ -82,6 +82,18 @@ jobs:
             --notes-file NOTES.md \
             --latest=false \
             ${{ steps.build.outputs.files }}
+          # Lisa for Windows updates herself from one fixed place: the "lisa-latest" release
+          # (a pre-release, so it's never "latest" and Android's updaters skip it). Refresh it.
+          if [ -e latest.yml ]; then
+            exe="Lisa-Setup-${v}.exe"
+            gh release view lisa-latest --repo "${{ github.repository }}" >/dev/null 2>&1 || \
+              gh release create lisa-latest --repo "${{ github.repository }}" --target main --title "Lisa (update feed)" \
+                --notes "Lisa for Windows checks this release for updates. Download Lisa from the newest lisa-v release instead." --prerelease --latest=false
+            for a in $(gh release view lisa-latest --repo "${{ github.repository }}" --json assets -q '.assets[].name'); do
+              gh release delete-asset lisa-latest "$a" --repo "${{ github.repository }}" --yes
+            done
+            gh release upload lisa-latest --repo "${{ github.repository }}" --clobber "$exe" "$exe.blockmap" latest.yml
+          fi
 
       - name: Publish the desktop release
         if: steps.build.outputs.kind == 'desktop'
