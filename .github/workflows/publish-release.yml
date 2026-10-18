@@ -26,6 +26,26 @@ jobs:
         run: |
           set -euo pipefail
           cd upload
+          # Lisa's own app (Windows + Android): its version is in LISA_VERSION.
+          if [ -e LISA_VERSION ]; then
+            v=$(tr -d ' \n\r' < LISA_VERSION)
+            files=""
+            if [ -e Lisa-Setup.part0 ]; then
+              exe="Lisa-Setup-${v}.exe"
+              cat Lisa-Setup.part* > "$exe"
+              echo "$(cat SHA256)  $exe" | sha256sum -c -
+              files="$exe"
+            fi
+            if [ -e "Lisa-Android-${v}.apk" ]; then
+              echo "$(cat APK_SHA256)  Lisa-Android-${v}.apk" | sha256sum -c -
+              files="$files Lisa-Android-${v}.apk"
+            fi
+            echo "kind=lisa" >> "$GITHUB_OUTPUT"
+            echo "version=$v" >> "$GITHUB_OUTPUT"
+            echo "files=$files" >> "$GITHUB_OUTPUT"
+            echo "apk=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [ -e Halcira-Setup.part0 ]; then
             version=$(grep '^version:' latest.yml | awk '{print $2}')
             exe="Halcira-Setup-${version}.exe"
@@ -45,6 +65,23 @@ jobs:
             echo "apkversion=$(echo "$f" | sed -E 's/Halcira-Android-(.*)\.apk/\1/')" >> "$GITHUB_OUTPUT"
           done
           echo "apk=$apk" >> "$GITHUB_OUTPUT"
+
+      - name: Publish a Lisa release
+        if: steps.build.outputs.kind == 'lisa'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd upload
+          v="${{ steps.build.outputs.version }}"
+          # Never "latest": Halcira's desktop updater reads the latest release.
+          gh release create "lisa-v$v" \
+            --repo "${{ github.repository }}" \
+            --target main \
+            --title "Lisa $v" \
+            --notes-file NOTES.md \
+            --latest=false \
+            ${{ steps.build.outputs.files }}
 
       - name: Publish the desktop release
         if: steps.build.outputs.kind == 'desktop'
