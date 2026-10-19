@@ -26,6 +26,26 @@ jobs:
         run: |
           set -euo pipefail
           cd upload
+          # Halcira Maps (Windows + Android): its version is in MAPS_VERSION.
+          if [ -e MAPS_VERSION ]; then
+            v=$(tr -d ' \n\r' < MAPS_VERSION)
+            files=""
+            if [ -e Halcira-Maps-Setup.part0 ]; then
+              exe="Halcira-Maps-Setup-${v}.exe"
+              cat Halcira-Maps-Setup.part* > "$exe"
+              echo "$(cat SHA256)  $exe" | sha256sum -c -
+              files="$exe"
+            fi
+            if [ -e "Halcira-Maps-Android-${v}.apk" ]; then
+              echo "$(cat APK_SHA256)  Halcira-Maps-Android-${v}.apk" | sha256sum -c -
+              files="$files Halcira-Maps-Android-${v}.apk"
+            fi
+            echo "kind=maps" >> "$GITHUB_OUTPUT"
+            echo "version=$v" >> "$GITHUB_OUTPUT"
+            echo "files=$files" >> "$GITHUB_OUTPUT"
+            echo "apk=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           # Lisa's own app (Windows + Android): its version is in LISA_VERSION.
           if [ -e LISA_VERSION ]; then
             v=$(tr -d ' \n\r' < LISA_VERSION)
@@ -99,6 +119,34 @@ jobs:
               gh release delete-asset lisa-latest "$a" --repo "${{ github.repository }}" --yes
             done
             gh release upload lisa-latest --repo "${{ github.repository }}" --clobber "$exe" "$exe.blockmap" latest.yml
+          fi
+
+      - name: Publish a Halcira Maps release
+        if: steps.build.outputs.kind == 'maps'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd upload
+          v="${{ steps.build.outputs.version }}"
+          # Never "latest": Halcira's desktop updater reads the latest release.
+          gh release create "maps-v$v" \
+            --repo "${{ github.repository }}" \
+            --target main \
+            --title "Halcira Maps $v" \
+            --notes-file NOTES.md \
+            --latest=false \
+            ${{ steps.build.outputs.files }}
+          # Halcira Maps for Windows updates itself from the "maps-latest" pre-release. Refresh it.
+          if [ -e latest.yml ]; then
+            exe="Halcira-Maps-Setup-${v}.exe"
+            gh release view maps-latest --repo "${{ github.repository }}" >/dev/null 2>&1 || \
+              gh release create maps-latest --repo "${{ github.repository }}" --target main --title "Halcira Maps (update feed)" \
+                --notes "Halcira Maps for Windows checks this release for updates. Download Halcira Maps from the newest maps-v release instead." --prerelease --latest=false
+            for a in $(gh release view maps-latest --repo "${{ github.repository }}" --json assets -q '.assets[].name'); do
+              gh release delete-asset maps-latest "$a" --repo "${{ github.repository }}" --yes
+            done
+            gh release upload maps-latest --repo "${{ github.repository }}" --clobber "$exe" "$exe.blockmap" latest.yml
           fi
 
       - name: Publish the desktop release
