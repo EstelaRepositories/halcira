@@ -181,6 +181,11 @@ jobs:
             --latest=false \
             "${{ steps.build.outputs.apk }}"
 
+      - name: Tell the apps (Lisa's server pushes it to every open app)
+        if: success()
+        continue-on-error: true
+        run: curl -fsS -m 20 -X POST https://lisa-restless-horizon-9628.fly.dev/updates/poke || true
+
       - name: Remove the upload branch
         if: success()
         run: git push origin --delete "${{ github.ref_name }}"
